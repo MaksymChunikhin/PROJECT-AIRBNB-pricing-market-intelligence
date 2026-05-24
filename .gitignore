@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Jupyter
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# Data — large files, download from Inside Airbnb
+data/raw/
+data/processed/
+
+# Trained models — regenerate by running notebooks
+models/
+
+# ML training artifacts
+catboost_info/
+notebooks/catboost_info/
+lightgbm_info/
+mlruns/
+wandb/
+.optuna/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Environment variables / secrets
+.env
+.env.local
+*.pem
+*.key
+
+# IDE / editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Claude Code
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
