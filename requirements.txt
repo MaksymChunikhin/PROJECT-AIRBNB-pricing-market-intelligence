@@ -38,6 +38,7 @@ geopy>=2.4
 
 # App (in development)
 streamlit>=1.30
+streamlit-folium>=0.18
 
 # Dev
 ipykernel>=6.27
