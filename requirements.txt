@@ -25,6 +25,9 @@ optuna>=3.5
 hdbscan>=0.8
 umap-learn>=0.5
 
+# GPU acceleration (optional, requires CUDA — install via RAPIDS: https://rapids.ai)
+# cudf-cu12>=24.0
+
 # Interpretability
 shap>=0.44
 
@@ -32,9 +35,6 @@ shap>=0.44
 sentence-transformers>=2.3
 transformers>=4.36
 torch>=2.0
-
-# Geo
-geopy>=2.4
 
 # App (in development)
 streamlit>=1.30
