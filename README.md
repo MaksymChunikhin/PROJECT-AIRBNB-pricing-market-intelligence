@@ -49,7 +49,7 @@ airbnb_project/
 ├── models/           # Обученные модели и артефакты
 │
 └── app/
-    └── streamlit_app.py   # Streamlit dashboard (в разработке)
+    └── streamlit_app.py   # Streamlit dashboard 
 ```
 
 ---
@@ -150,7 +150,7 @@ Notebook: `05_recommender.ipynb`
 | `03_pricing_model.ipynb` | GBM models + Optuna + SHAP | ✅ |
 | `04_market_intelligence.ipynb` | Market intelligence + clustering | ✅ |
 | `05_recommender.ipynb` | Recommendation system | ✅ |
-| `streamlit_app.py` | Streamlit application | 🚧 |
+| `streamlit_app.py` | Streamlit application | ✅ |
 
 ---
 
@@ -248,7 +248,7 @@ airbnb_project/
 ├── models/           # Trained models and artifacts (not tracked)
 │
 └── app/
-    └── streamlit_app.py   # Streamlit dashboard (in progress)
+    └── streamlit_app.py   # Streamlit dashboard 
 ```
 
 ---
@@ -349,7 +349,7 @@ find similar Airbnb listings based on property characteristics.
 | `03_pricing_model.ipynb` | GBM models + Optuna + SHAP | ✅ |
 | `04_market_intelligence.ipynb` | Market intelligence + clustering | ✅ |
 | `05_recommender.ipynb` | Recommendation system | ✅ |
-| `streamlit_app.py` | Streamlit application | 🚧 |
+| `streamlit_app.py` | Streamlit application | ✅ |
 
 ---
 
