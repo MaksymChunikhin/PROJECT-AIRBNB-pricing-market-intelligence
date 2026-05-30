@@ -600,8 +600,8 @@ def page_hosts(lf, hosts):
 
     st.subheader("Профиль хоста")
 
-    # Поиск по ID или карта
-    search_id = st.text_input("Вставьте ID объекта (или кликните на карте)", placeholder="Например: 27886")
+    # Поиск по ID, имени хоста или карта
+    search_id = st.text_input("Вставьте ID объекта или имя хоста (или кликните на карте)", placeholder="Например: 27886 или Ruben")
 
     st.caption("Или выберите объект на карте:")
     map_df = lf.dropna(subset=["latitude", "longitude"])
@@ -627,14 +627,34 @@ def page_hosts(lf, hosts):
     map_data = st_folium(m, height=460, width=None,
                          returned_objects=["last_object_clicked_tooltip"])
 
-    # Определяем listing_id: сначала текстовый ввод, потом клик на карте
+    # Определяем host_id: текстовый ввод → по ID или имени, иначе клик на карте
     listing_id = None
+    found_host_id = None
     if search_id.strip():
+        q = search_id.strip()
         try:
-            listing_id = int(search_id.strip())
+            listing_id = int(q)
         except ValueError:
-            st.warning("Введите числовой ID объекта")
-            return
+            # Поиск по имени хоста — группируем по host_id
+            col_ok = "host_name" in lf.columns
+            matches = lf[lf["host_name"].str.lower() == q.lower()] if col_ok else pd.DataFrame()
+            if not len(matches):
+                matches = lf[lf["host_name"].str.contains(q, case=False, na=False)] if col_ok else pd.DataFrame()
+            if not len(matches):
+                st.warning(f"Хост «{q}» не найден. Проверьте имя или введите числовой ID.")
+                return
+            host_opts = (matches.groupby("host_id")["host_name"].first()
+                         .reset_index()
+                         .merge(matches.groupby("host_id").size().reset_index(name="cnt"), on="host_id"))
+            if len(host_opts) == 1:
+                found_host_id = int(host_opts["host_id"].iloc[0])
+            else:
+                labels = host_opts.apply(
+                    lambda r: f"{r['host_name']} (host_id: {r['host_id']}, объектов: {r['cnt']})", axis=1
+                ).tolist()
+                sel = st.selectbox("Найдено несколько хостов — выберите:", labels)
+                idx = labels.index(sel)
+                found_host_id = int(host_opts["host_id"].iloc[idx])
     else:
         raw = (map_data or {}).get("last_object_clicked_tooltip")
         if raw:
@@ -643,16 +663,23 @@ def page_hosts(lf, hosts):
             except (ValueError, TypeError):
                 pass
 
-    if listing_id is None:
-        st.info("👆 Кликните на объект на карте или введите ID выше")
+    if listing_id is None and found_host_id is None:
+        st.info("👆 Кликните на объект на карте или введите ID / имя хоста выше")
         return
 
-    src = lf[lf["id"] == listing_id]
-    if not len(src):
-        st.warning("Объект не найден в базе")
-        return
+    if found_host_id is not None:
+        host_rows = lf[lf["host_id"] == found_host_id]
+        if not len(host_rows):
+            st.warning("Объект не найден в базе")
+            return
+        src = host_rows.iloc[0]
+    else:
+        src_df = lf[lf["id"] == listing_id]
+        if not len(src_df):
+            st.warning("Объект не найден в базе")
+            return
+        src = src_df.iloc[0]
 
-    src = src.iloc[0]
     host_id = src["host_id"]
     host_name = src.get("host_name", "") or ""
     st.caption(f"Хост: **{host_name}** (ID: {host_id})")
